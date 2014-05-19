@@ -1,0 +1,10 @@
+name: ffp
+description: A sample Polymer application
+dependencies:
+    polymer: any
+    stagexl: any
+transformers:
+- polymer:
+    entry_points: web/ffp.html
+- $dart2js:
+    minify: true

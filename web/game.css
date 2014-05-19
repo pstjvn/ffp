@@ -1,0 +1,41 @@
+
+html, body, .stage {
+  background-color: #000000;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 14px;
+  font-weight: normal;
+  line-height: 1.2em;
+  margin: 0;
+  padding: 0;
+  width: 480px;
+  height: 640px;
+}
+
+
+.loader {
+  width: 480px;
+  height: 640px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: #42abe1;
+  -webkit-transition: opacity 500ms linear;
+  transition: opacity 500ms linear;
+}
+
+.loader > img {
+  opacity: 0;
+  -webkit-transition: opacity 1s linear;
+  transition: opacity 1s linear;
+}
+
+.loader > img.visible {
+  opacity: 1;
+}
+
+.debug-collisions {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 500px;
+}
