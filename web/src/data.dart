@@ -54,5 +54,7 @@ void addResources(ResourceManager rm) {
     ..addSound('start', 'assets/sounds/rope_swinging_swish_2.mp3', slo)
     ..addSound('score', 'assets/sounds/app_game_interactive_alert_tone_016.mp3', slo)
     ..addSound('fartsound', 'assets/sounds/fart7.mp3', slo)
-    ..addSound('die', 'assets/sounds/cartoonish_whip_crack.mp3', slo);
+    ..addSound('die', 'assets/sounds/cartoonish_whip_crack.mp3', slo)
+    ..addTextFile('flower', 'assets/images/flower.svg')
+    ..addTextFile('flag', 'assets/images/flag.svg');
 }
