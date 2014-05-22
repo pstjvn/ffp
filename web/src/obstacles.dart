@@ -172,6 +172,7 @@ class Collisions implements CollisionGroup {
   Matrix _cachedMatrix = new Matrix.fromIdentity();
   List<num> _numCache = new List(8);
   Rectangle _rectCache = new Rectangle(0,0,0,0);
+  NewObstacle lastObstacle = null;
 
   HelperCanvas _playerCanvas;
   HelperCanvas _obstaclesCanvas;
@@ -332,6 +333,7 @@ class Collisions implements CollisionGroup {
     var source = _collidesNaive(target);
 
     if (source != null) {
+      lastObstacle = source;
 //      return imageCompareCollides(source, target);
       return target.collides(source);
     }
