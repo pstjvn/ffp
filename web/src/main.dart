@@ -81,6 +81,8 @@ class Main {
 
   /// Flag, if true the game play is ON.
   bool _inGame = false;
+  bool _canStart = true;
+  num _pigXValue = 0;
   /// Reference to the splashs creen used.
   Bitmap splash;
   /// The sky map in the background.
@@ -163,6 +165,7 @@ class Main {
     m._accm = new AccelerationMovement(m.spaceBetweenObstacles * 1.1);
 
     return m.loadResources()
+//        .then(m.createImages)
         .then(m.configureStage)
         .then(m.configureEvents)
         .then(m.start);
@@ -174,6 +177,12 @@ class Main {
     renderLoop.addStage(stage);
   }
 
+//  Future<List<BitmapData>> createImages(_) {
+//    return Future.wait([
+//      fromSvg(resourceManager.getTextFile('flag'), 300, 200),
+//      fromSvg(resourceManager.getTextFile('flower'), 110, 200)
+//    ]);
+//  }
 
   /**
    * Extracted resources description and start of thier load.
@@ -206,7 +215,7 @@ class Main {
   /**
    * Extracted scene configuration.
    */
-  void configureStage(dynamic _) {
+  void configureStage(dynamic _) {;
 
     configureSounds();
 
@@ -258,12 +267,13 @@ class Main {
         points: pigPoints,
         animationFrames: regularPlayerFrames);
 
+    _pigXValue = (_stagerect.width / 4) - (pig.width / 2) + pig.pivotX;
+
     pig
       ..pivotX = pig.width / 2
       ..pivotY = pig.height / 2
       ..framesPerSprite = framesPerSprite
-      ..setOriginalPosition(
-          (_stagerect.width / 4) - (pig.width / 2) + pig.pivotX,
+      ..setOriginalPosition(_pigXValue,
           (_stagerect.height / 3) - (pig.height /2) + pig.pivotY);
 
     // Adds the fart image and instabnce to the pig
@@ -350,6 +360,7 @@ class Main {
   ///  Handles the tap/click on the 'accelerate' button.
   void handleAccelerateButton(Event e) {
     e.stopImmediatePropagation();
+    if (pig.dead) return;
     pig.fart();
     _fart.play();
     _accm.reset();
@@ -358,8 +369,12 @@ class Main {
   /// Handles the tapping / clicking on the stage.
   void handleTap(Event e) {
     if (e.stopsImmediatePropagation) return;
+
     e.stopImmediatePropagation();
-    if (!_inGame) {
+
+    if (pig.dead && !_canStart) return;
+
+    if (!_inGame && _canStart) {
       _start.play();
       startGame();
     } else {
@@ -390,9 +405,7 @@ class Main {
     juggler.add(pigtween);
   }
 
-  /**
-   * Handles a collision detected event.
-   */
+  /// Handles a collision detected event.
   void onCollision() {
     juggler.removeTweens(pig);
     die();
@@ -404,6 +417,8 @@ class Main {
     score.reset();
     pig.animate = false;
     pig.dead = false;
+    pig.x = _pigXValue;
+    pig.rotation = 0;
     juggler.remove(dieTween);
     c.setInitialPosition();
     juggler.tween(splash, 0.5, TransitionFunction.linear)
@@ -413,17 +428,108 @@ class Main {
     };
   }
 
+  void setupDie() {
+    var radius = pig.height / 2;
+    var chain = new AnimationChain();
+    if (c.lastObstacle.orientationType == NewObstacle.BOTTOM) {
+      // pig is inside the tree
+      if (pig.x > c.lastObstacle.x && pig.x < c.lastObstacle.x + (c.lastObstacle.width / 2)) {
+        chain..add(new Tween(pig, 0.3, TransitionFunction.linear)..animate.rotation.to(math.PI/2));
+      } else {
+        if (pig.x < c.lastObstacle.x) {
+          // we hit it on the left
+          pig.x = pig.x + 10;
+          chain
+            ..add(new Tween(pig, 0.2, TransitionFunction.linear)
+              ..animate.rotation.to((math.PI/4) * -1)
+              ..animate.x.to(pig.x - 10))
+            ..add(new Tween(pig,  0.3, TransitionFunction.linear)
+              ..animate.y.to(floor.y - pig.pivotY))
+            ..add(new Tween(pig, 0.08, TransitionFunction.linear)
+              ..animate.y.to(floor.y - pig.pivotY + 15)
+              ..animate.rotation.to((math.PI/2) * -1))
+            ..add(new Tween(pig, 1.5, TransitionFunction.linear)
+              ..animate.rotation.to((math.PI * 2) * -1)
+              ..animate.x.to(pig.x - (math.PI * radius * 2)));
+
+        } else {
+          var perimeter = 2 * math.PI * radius;
+          var distance = c.lastObstacle.x + c.lastObstacle.width + spaceBetweenObstacles - pig.width;
+          var fulls = (distance / perimeter).floor();
+          var remainder = (distance / perimeter) - (fulls * perimeter);
+          var result = math.PI / remainder;
+          chain
+            ..add(new Tween(pig, 0.2, TransitionFunction.linear)
+              ..animate.rotation.to(math.PI/4))
+            ..add(new Tween(pig,  0.3, TransitionFunction.linear)
+              ..animate.y.to(floor.y - pig.pivotY + 15))
+            ..add(new Tween(pig, (1.5 / 100 * distance), TransitionFunction.easeOutElastic)
+              ..animate.x.to(distance)
+              ..animate.rotation.by((math.PI * fulls) + result));
+        }
+      }
+    } else {
+      if (pig.x > c.lastObstacle.x && pig.x < c.lastObstacle.x + (c.lastObstacle.width / 2)) {
+        // we hit the obstacle from the bottom,
+        chain
+            ..add(new Tween(pig, 0.3, TransitionFunction.easeOutCubic)
+                ..animate.y.by(-15))
+            ..add(new Tween(pig,  1.0, TransitionFunction.linear)
+                ..animate.y.by(15)
+                ..delay = 0.5)
+            ..add(new Tween(pig, 0.2, TransitionFunction.linear)
+                ..animate.y.by(spaceBetweenObstacles - (pig.height * 1.25)));
+
+      } else {
+        if (pig.x < c.lastObstacle.x) {
+          // we hit it on the left
+          chain
+              ..add(new Tween(pig, 0.3, TransitionFunction.easeOutCubic)
+                ..animate.x.by(15))
+              ..add(new Tween(pig,  1.0, TransitionFunction.linear)
+                ..animate.x.by(-15)
+                ..animate.y.by(10)
+                ..delay = 0.5)
+              ..add(new Tween(pig, 0.3, TransitionFunction.linear)
+                ..animate.y.to(floor.y - pig.pivotY + 15)
+                ..animate.rotation.to(math.PI / 2 * -1));
+        } else {
+          // we hit it on the right
+          chain
+            ..add(new Tween(pig, 0.3, TransitionFunction.easeOutCubic)
+              ..animate.x.by(-15))
+            ..add(new Tween(pig,  1.0, TransitionFunction.linear)
+              ..animate.x.by(15)
+              ..animate.y.by(10)
+              ..delay = 0.5)
+            ..add(new Tween(pig, 0.3, TransitionFunction.linear)
+              ..animate.y.to(floor.y - pig.pivotY)
+              ..animate.rotation.to(math.PI / 2));
+        }
+      }
+    }
+
+    chain.onComplete = showSplash;
+    juggler.add(chain);
+    _die.play();
+  }
+
+  void showSplash() {
+    stage.addChild(splash..alpha = 1);
+    _canStart = true;
+  }
+
   /// Kill the player - executes sequences for when the user must die.
   void die() {
     pig.dead = true;
-    dieTween = new Tween(pig, 0.5, TransitionFunction.linear)
-      ..animate.y.to(floor.y - pig.pivotY)
-      ..animate.rotation.to(math.PI/4)
-      ..delay = 0.5;
-    juggler.add(dieTween);
+    _canStart = false;
     _inGame = false;
-    _die.play();
     _accm.end();
-    stage.addChild(splash..alpha = 1);
+    if (c.lastObstacle != null) {
+      setupDie();
+    } else {
+      _die.play();
+      showSplash();
+    }
   }
 }
