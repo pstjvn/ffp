@@ -148,7 +148,12 @@ class Player extends Irregular implements Animatable {
   void set dead(bool d) {
     _dead = d;
     dieFrame = 5;
+    if (!_dead) {
+      bitmapData = sprites.frameAt(0);
+    }
   }
+
+  bool get dead => _dead;
 
 
   /**
