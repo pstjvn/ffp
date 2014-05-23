@@ -21,7 +21,9 @@ void main() {
   Rectangle r = canvas.parent.getBoundingClientRect();
   canvas
       ..width = r.width.toInt()
-      ..height = r.height.toInt();
+      ..height = r.height.toInt()
+      ..style.width = '${r.width.toInt()}px'
+      ..style.height = '${r.height.toInt()}px';
 
   Future whenReady = Main.instanciate(canvas);
 
