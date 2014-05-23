@@ -14,7 +14,7 @@ part 'canvas.dart';
 part 'player.dart';
 part 'obstacles.dart';
 part 'gamescore.dart';
-
+part 'boundanimations.dart';
 
 
 /**
@@ -116,10 +116,15 @@ class Main {
   GameSound _score;
   /// Refference the farting sound preadjusted for volume.
   GameSound _fart;
+  GameSound _pig;
+  GameSound _stab;
 
 
   /// Acceleration movement calculation utility
   AccelerationMovement _accm;
+
+  BoundAnimation treeImpact;
+  BoundAnimation thornImpact;
 
 
 
@@ -154,6 +159,9 @@ class Main {
     m..stage = new GameStage(canvas)
      ..renderLoop = new RenderLoop()
      ..resourceManager = new ResourceManager();
+
+    // Speed up things!
+    m.screenScrollTime = m.screenScrollTime / 800 * m.stage.contentRectangle.width;
 
     // Use the global juggled (the instance in the render loop)
     // Note that one can also use the stage juggler in order to
@@ -208,6 +216,8 @@ class Main {
     _score = new GameSound(resourceManager.getSound('score'), z3);
     _fart = new GameSound(resourceManager.getSound('fartsound'));
     _die = new GameSound(resourceManager.getSound('die'), z4);
+    _stab = new GameSound(resourceManager.getSound('stab'));
+    _pig = new GameSound(resourceManager.getSound('pig'), z4);
 
   }
 
@@ -225,6 +235,8 @@ class Main {
     var cloudsdata = resourceManager.getBitmapData('clouds');
     var pigdata = resourceManager.getBitmapData('pig');
     var splashdata = resourceManager.getBitmapData('tap');
+
+    treeImpact = new BoundAnimation(resourceManager.getBitmapData('impact'), frames: 6);
 
     score = new GameScore(bitmap: resourceManager.getBitmapData('digits'),
       boundingRect: _stagerect,
@@ -435,6 +447,9 @@ class Main {
       // pig is inside the tree
       if (pig.x > c.lastObstacle.x && pig.x < c.lastObstacle.x + (c.lastObstacle.width / 2)) {
         chain..add(new Tween(pig, 0.3, TransitionFunction.linear)..animate.rotation.to(math.PI/2));
+
+        pig.addBoundAnimation(treeImpact, BoundAnimation.TOP);
+
       } else {
         if (pig.x < c.lastObstacle.x) {
           // we hit it on the left
@@ -452,6 +467,8 @@ class Main {
               ..animate.rotation.to((math.PI * 2) * -1)
               ..animate.x.to(pig.x - (math.PI * radius * 2)));
 
+          pig.addBoundAnimation(treeImpact, BoundAnimation.LEFT);
+
         } else {
           var perimeter = 2 * math.PI * radius;
           var distance = c.lastObstacle.x + c.lastObstacle.width + spaceBetweenObstacles - pig.width;
@@ -466,8 +483,11 @@ class Main {
             ..add(new Tween(pig, (1.5 / 100 * distance), TransitionFunction.easeOutElastic)
               ..animate.x.to(distance)
               ..animate.rotation.by((math.PI * fulls) + result));
+
+          pig.addBoundAnimation(treeImpact, BoundAnimation.RIGHT);
         }
       }
+      _die.play();
     } else {
       if (pig.x > c.lastObstacle.x && pig.x < c.lastObstacle.x + (c.lastObstacle.width / 2)) {
         // we hit the obstacle from the bottom,
@@ -479,6 +499,9 @@ class Main {
                 ..delay = 0.5)
             ..add(new Tween(pig, 0.2, TransitionFunction.linear)
                 ..animate.y.by(spaceBetweenObstacles - (pig.height * 1.25)));
+
+
+            pig.addBoundAnimation(treeImpact, BoundAnimation.BOTTOM);
 
       } else {
         if (pig.x < c.lastObstacle.x) {
@@ -507,11 +530,13 @@ class Main {
               ..animate.rotation.to(math.PI / 2));
         }
       }
+      _stab.play();
+      _pig.play();
     }
 
     chain.onComplete = showSplash;
     juggler.add(chain);
-    _die.play();
+
   }
 
   void showSplash() {

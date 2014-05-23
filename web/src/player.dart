@@ -2,70 +2,9 @@ part of fartingflappypig;
 
 
 
-/**
- * Represents a fart in the game.
- *
- * A short animatable that visualizes a fart from the pig. It could/should be
- * coupled with the farting sound.
- *
- * The intented use is to bind the movement to that of the farting animal and
- * use the juggled only for the animation.
- */
-class Fart extends Bitmap implements Animatable {
-
-  /// Number of frames in the animation.
-  int frames;
-  /// How many screen frames a single sprite frame should remain active.
-  int framesPerSprite;
-  /// The SpriteSheet containing all the frames for the animation.
-  SpriteSheet sprites;
-
-  int _currentFrame = 0;
-  int _delay = 0;
-
-  Fart(BitmapData bitmap, {this.frames: 1, this.framesPerSprite: 2}): super() {
-    sprites = new SpriteSheet(bitmap, bitmap.width, bitmap.height ~/ frames);
-    bitmapData = sprites.frameAt(_currentFrame);
-  }
-
-  /// Starts a new farting animation.
-  void start(Stage st) {
-    _delay = 0;
-    _currentFrame = 0;
-    bitmapData = sprites.frameAt(_currentFrame);
-    st.addChild(this);
-    stage.renderLoop.juggler.add(this);
-  }
-
-  /// Implements the animatable interface for the juggler.
-  bool advanceTime(num time) {
-    _delay++;
-    if (_delay > framesPerSprite) {
-      _delay = 0;
-      _currentFrame++;
-      if (_currentFrame < sprites.frames.length) {
-        bitmapData = sprites.frameAt(_currentFrame);
-      } else {
-        stage.renderLoop.juggler.remove(this);
-        stage.removeChild(this);
-      }
-    }
-    return true;
-  }
-}
-
-
-
-/**
- * Implements the main protagonist abstractions.
- *
- * In our game it is a flying pig that can fart.
- */
 class Player extends Irregular implements Animatable {
-
   /// Number of screen frames to show a single sprite frame for.
   int framesPerSprite = 5;
-
   /// The instance of srpites to use.
   SpriteSheet sprites;
 
@@ -103,6 +42,29 @@ class Player extends Irregular implements Animatable {
     _fart = new Fart(data, frames: frames, framesPerSprite: framesPerSprite);
     _fart.x = x - pivotX - _fart.width + 10;
     _fart.y = y - pivotY;
+  }
+
+
+  void addBoundAnimation(BoundAnimation ba, num boundDirection) {
+    ba.pivotX = ba.width / 2;
+    ba.pivotY = ba.height / 2;
+    ba.rotation = math.PI * boundDirection;
+    if (boundDirection == BoundAnimation.LEFT) {
+      ba.x = x - pivotX + width - (ba.width / 2) + ba.pivotX;
+      ba.y = y - pivotY + (height / 2) - (ba.height / 2) + ba.pivotY;
+    } else if (boundDirection == BoundAnimation.TOP) {
+      ba.x = x - pivotX + (width / 2) - (ba.width / 2) + ba.pivotX;
+      ba.y = y - pivotY + height - (ba.height / 2) + ba.pivotY;
+    } else if (boundDirection == BoundAnimation.BOTTOM) {
+      ba.x = x - pivotX + (width / 2) - (ba.width / 2) + ba.pivotY;
+      ba.y = y - pivotY - (ba.height / 2) + ba.pivotY;
+    } else if (boundDirection == BoundAnimation.RIGHT) {
+      ba.x = x - pivotX - (ba.width / 2) + ba.pivotX;
+      ba.y = y - pivotY + (height / 2) - (ba.height / 2) + ba.pivotY;
+    } else {
+      throw new Error();
+    }
+    ba.start(stage);
   }
 
   void fart() {
