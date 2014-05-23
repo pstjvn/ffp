@@ -51,6 +51,7 @@ void addResources(ResourceManager rm) {
     ..addBitmapData('fart', 'assets/images/fart.png')
     ..addBitmapData('pig', 'assets/images/deadpig.png')
     ..addBitmapData('impact', 'assets/images/impact.png')
+    ..addBitmapData('blood', 'assets/images/blood.png')
     ..addSound('clicker', 'assets/sounds/punch26.mp3', slo)
     ..addSound('start', 'assets/sounds/rope_swinging_swish_2.mp3', slo)
     ..addSound('score', 'assets/sounds/app_game_interactive_alert_tone_016.mp3', slo)

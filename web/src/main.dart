@@ -237,6 +237,7 @@ class Main {
     var splashdata = resourceManager.getBitmapData('tap');
 
     treeImpact = new BoundAnimation(resourceManager.getBitmapData('impact'), frames: 6);
+    thornImpact = new BoundAnimation(resourceManager.getBitmapData('blood'), frames: 6, framesPerSprite: 3)..type = BoundAnimation.SIDED;
 
     score = new GameScore(bitmap: resourceManager.getBitmapData('digits'),
       boundingRect: _stagerect,
@@ -501,7 +502,7 @@ class Main {
                 ..animate.y.by(spaceBetweenObstacles - (pig.height * 1.25)));
 
 
-            pig.addBoundAnimation(treeImpact, BoundAnimation.BOTTOM);
+        pig.addBoundAnimation(thornImpact, BoundAnimation.BOTTOM);
 
       } else {
         if (pig.x < c.lastObstacle.x) {
@@ -516,6 +517,9 @@ class Main {
               ..add(new Tween(pig, 0.3, TransitionFunction.linear)
                 ..animate.y.to(floor.y - pig.pivotY + 15)
                 ..animate.rotation.to(math.PI / 2 * -1));
+
+          pig.addBoundAnimation(thornImpact, BoundAnimation.LEFT);
+
         } else {
           // we hit it on the right
           chain
@@ -528,6 +532,8 @@ class Main {
             ..add(new Tween(pig, 0.3, TransitionFunction.linear)
               ..animate.y.to(floor.y - pig.pivotY)
               ..animate.rotation.to(math.PI / 2));
+
+          pig.addBoundAnimation(thornImpact, BoundAnimation.RIGHT);
         }
       }
       _stab.play();

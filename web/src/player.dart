@@ -48,19 +48,43 @@ class Player extends Irregular implements Animatable {
   void addBoundAnimation(BoundAnimation ba, num boundDirection) {
     ba.pivotX = ba.width / 2;
     ba.pivotY = ba.height / 2;
-    ba.rotation = math.PI * boundDirection;
     if (boundDirection == BoundAnimation.LEFT) {
-      ba.x = x - pivotX + width - (ba.width / 2) + ba.pivotX;
-      ba.y = y - pivotY + (height / 2) - (ba.height / 2) + ba.pivotY;
+      ba.rotation = math.PI / 2;
+      if (ba.type == BoundAnimation.CENTERED) {
+        ba.x = x - pivotX + width - (ba.width / 2) + ba.pivotX;
+        ba.y = y - pivotY + (height / 2) - (ba.height / 2) + ba.pivotY;
+      } else {
+        ba.x = x - pivotX + width - ba.width + ba.pivotX;
+        ba.y = y - pivotY + (height / 2) - (ba.height / 2) + ba.pivotY;
+      }
     } else if (boundDirection == BoundAnimation.TOP) {
-      ba.x = x - pivotX + (width / 2) - (ba.width / 2) + ba.pivotX;
-      ba.y = y - pivotY + height - (ba.height / 2) + ba.pivotY;
+      ba.rotation = math.PI * 2;
+      if (ba.type == BoundAnimation.CENTERED) {
+        ba.x = x - pivotX + (width / 2) - (ba.width / 2) + ba.pivotX;
+        ba.y = y - pivotY + height - (ba.height / 2) + ba.pivotY;
+      } else {
+        ba.x = x - pivotX + (width / 2) - (ba.width / 2) + ba.pivotX;
+        ba.y = y - pivotY + height - ba.height + ba.pivotY;
+      }
     } else if (boundDirection == BoundAnimation.BOTTOM) {
-      ba.x = x - pivotX + (width / 2) - (ba.width / 2) + ba.pivotY;
-      ba.y = y - pivotY - (ba.height / 2) + ba.pivotY;
+      ba.rotation = 0;
+      if (ba.type == BoundAnimation.CENTERED) {
+        ba.x = x - pivotX + (width / 2) - (ba.width / 2) + ba.pivotX;
+        ba.y = y - pivotY - (ba.height / 2) + ba.pivotY;
+      } else {
+        print(ba.pivotY);
+        ba.x = x - pivotX + (width / 2) - (ba.width / 2) + ba.pivotX;
+        ba.y = y - pivotY + ba.pivotY;
+      }
     } else if (boundDirection == BoundAnimation.RIGHT) {
-      ba.x = x - pivotX - (ba.width / 2) + ba.pivotX;
-      ba.y = y - pivotY + (height / 2) - (ba.height / 2) + ba.pivotY;
+      ba.rotation = math.PI * 1.5;
+      if (ba.type == BoundAnimation.CENTERED) {
+        ba.x = x - pivotX - (ba.width / 2) + ba.pivotX;
+        ba.y = y - pivotY + (height / 2) - (ba.height / 2) + ba.pivotY;
+      } else {
+        ba.x = x - pivotX + ba.pivotX;
+        ba.y = y - pivotY + (height / 2) - (ba.height / 2) + ba.pivotY;
+      }
     } else {
       throw new Error();
     }

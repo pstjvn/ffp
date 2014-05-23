@@ -7,11 +7,15 @@ class BoundAnimation extends Bitmap implements Animatable {
   static int BOTTOM = 2;
   static int LEFT = 3;
 
+  static int CENTERED = 4;
+  static int SIDED = 5;
+
   int frames;
   int framesPerSprite;
   SpriteSheet sprites;
   int _currentFrame = 0;
   int _delay = 0;
+  int type = CENTERED;
 
   BoundAnimation(BitmapData bitmap, {this.frames: 1, this.framesPerSprite: 1}): super() {
     var width = (bitmap.width > bitmap.height) ? bitmap.width ~/ frames : bitmap.width;
