@@ -161,7 +161,7 @@ class Main {
      ..resourceManager = new ResourceManager();
 
     // Speed up things!
-    m.screenScrollTime = m.screenScrollTime / 800 * m.stage.contentRectangle.width;
+    m.screenScrollTime = m.screenScrollTime / 640 * m.stage.contentRectangle.width;
 
     // Use the global juggled (the instance in the render loop)
     // Note that one can also use the stage juggler in order to
@@ -464,7 +464,7 @@ class Main {
             ..add(new Tween(pig, 0.08, TransitionFunction.linear)
               ..animate.y.to(floor.y - pig.pivotY + 15)
               ..animate.rotation.to((math.PI/2) * -1))
-            ..add(new Tween(pig, 1.5, TransitionFunction.linear)
+            ..add(new Tween(pig, 1.1, TransitionFunction.linear)
               ..animate.rotation.to((math.PI * 2) * -1)
               ..animate.x.to(pig.x - (math.PI * radius * 2)));
 
@@ -481,7 +481,7 @@ class Main {
               ..animate.rotation.to(math.PI/4))
             ..add(new Tween(pig,  0.3, TransitionFunction.linear)
               ..animate.y.to(floor.y - pig.pivotY + 15))
-            ..add(new Tween(pig, (1.5 / 100 * distance), TransitionFunction.easeOutElastic)
+            ..add(new Tween(pig, (0.5 / 100 * distance), TransitionFunction.easeOutBack)
               ..animate.x.to(distance)
               ..animate.rotation.by((math.PI * fulls) + result));
 
