@@ -15,8 +15,6 @@ void main() {
     return new Future.delayed(const Duration(seconds: 3));
   });
 
-  loader.append(img);
-
   CanvasElement canvas = document.querySelector('#stage');
   Rectangle r = canvas.parent.getBoundingClientRect();
   canvas
@@ -25,6 +23,7 @@ void main() {
       ..style.width = '${r.width.toInt()}px'
       ..style.height = '${r.height.toInt()}px';
 
+  loader.append(img);
   Future whenReady = Main.instanciate(canvas);
 
   Future.wait([whenReady, il]).then((_){
