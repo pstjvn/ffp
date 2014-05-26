@@ -562,5 +562,6 @@ class Main {
       _die.play();
       showSplash();
     }
+    c.lastObstacle = null;
   }
 }
