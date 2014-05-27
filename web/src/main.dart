@@ -275,7 +275,7 @@ class Main {
             ..moveX = true
             ..bitmapData = floordata);
 
-    pig = new Player(new Rectangle(0, 0, pigdata.width, pigdata.height ~/ 9),
+    pig = new Player(new Rectangle(0, 0, pigdata.width ~/9, pigdata.height),
         source: pigdata,
         points: pigPoints,
         animationFrames: regularPlayerFrames);

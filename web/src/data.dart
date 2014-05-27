@@ -49,7 +49,7 @@ void addResources(ResourceManager rm) {
     ..addBitmapData('digits', 'assets/images/numbers-big.png')
     ..addBitmapData('tap', 'assets/images/tap-to-fly.png')
     ..addBitmapData('fart', 'assets/images/fart.png')
-    ..addBitmapData('pig', 'assets/images/deadpig.png')
+    ..addBitmapData('pig', 'assets/images/pigh.png')
     ..addBitmapData('impact', 'assets/images/impact.png')
     ..addBitmapData('blood', 'assets/images/blood.png')
     ..addSound('clicker', 'assets/sounds/punch26.mp3', slo)
