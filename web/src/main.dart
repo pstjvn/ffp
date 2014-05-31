@@ -15,6 +15,11 @@ part 'player.dart';
 part 'obstacles.dart';
 part 'gamescore.dart';
 part 'boundanimations.dart';
+part 'eventhandler.dart';
+
+
+/// Global reference to the dimentions of the game. This is the game size not the screen size.
+var STAGE_RECT = new Rectangle(0, 0, 0, 0);
 
 
 /**
@@ -139,6 +144,12 @@ class Main {
       int obstacleHoleHeight,
       int framerate }) {
 
+    var x = canvas.width;
+    var y = canvas.height;
+
+
+    STAGE_RECT.width = 480;
+    STAGE_RECT.height = ((canvas.height / canvas.width) * 480).toInt();
     var  m = new Main();
     if (screenScrollTime != null) {
       m.screenScrollTime = screenScrollTime;
@@ -160,8 +171,9 @@ class Main {
      ..renderLoop = new RenderLoop()
      ..resourceManager = new ResourceManager();
 
-    // Speed up things!
-    m.screenScrollTime = m.screenScrollTime / 640 * m.stage.contentRectangle.width;
+
+    // Speed up movement!
+    m.screenScrollTime = m.screenScrollTime / 640 * 480;
 
     // Use the global juggled (the instance in the render loop)
     // Note that one can also use the stage juggler in order to
@@ -170,13 +182,22 @@ class Main {
     // one and the same.
     m.juggler = m.renderLoop.juggler;
 
+    // Fixes for Cocoon JS
+    m..stage.align = StageAlign.NONE
+     ..stage.scaleMode = StageScaleMode.SHOW_ALL;
+
     m._accm = new AccelerationMovement(m.spaceBetweenObstacles * 1.1);
 
-    return m.loadResources()
-//        .then(m.createImages)
+    return m
+        .preload()
+        .then(m.showInit)
+        .then(m.start)
+        .then(m.initFX)
+        .then(m.loadResources)
+
+//        .then((_) { return new Future.delayed(new Duration(seconds: 3)); })
         .then(m.configureStage)
-        .then(m.configureEvents)
-        .then(m.start);
+        .then(m.configureEvents);
   }
 
 
@@ -229,7 +250,7 @@ class Main {
 
     configureSounds();
 
-    var _stagerect = stage.contentRectangle;
+    var _stagerect = STAGE_RECT;
     var floordata = resourceManager.getBitmapData('floor');
     var treesdata = resourceManager.getBitmapData('trees');
     var cloudsdata = resourceManager.getBitmapData('clouds');
@@ -248,34 +269,34 @@ class Main {
       ..y = (_stagerect.height / 2) - (splashdata.height / 2);
 
     clouds = new MovingBackground(new Rectangle(0,0,
-        stage.contentRectangle.width + cloudsdata.width,
+        _stagerect.width + cloudsdata.width,
         cloudsdata.height))
       ..moveX = true
       ..seconds = 30.0
       ..bitmapData = cloudsdata;
 
     trees = new MovingBackground(new Rectangle(0,0,
-        stage.contentRectangle.width + treesdata.width,
+        _stagerect.width + treesdata.width,
         treesdata.height))
       ..moveX = true
       ..seconds = 8.0
       ..bitmapData = treesdata;
 
     sky = new StaticBackground(new Rectangle(0, 0,
-        stage.contentRectangle.width,
-        stage.contentRectangle.height - (
+        _stagerect.width,
+        _stagerect.height - (
             (floordata.height) +
             treesdata.height +
-            cloudsdata.height)
+            cloudsdata.height) + 2
         ), 0x42ABE1);
 
     floor = new Floor(new FloorBitmap(new Rectangle(0,0,
-        stage.contentRectangle.width + floordata.width,
+        _stagerect.width + floordata.width,
         floordata.height))
             ..moveX = true
             ..bitmapData = floordata);
 
-    pig = new Player(new Rectangle(0, 0, pigdata.width ~/9, pigdata.height),
+    pig = new Player(new Rectangle(0, 0, pigdata.width ~/ 9, pigdata.height),
         source: pigdata,
         points: pigPoints,
         animationFrames: regularPlayerFrames);
@@ -292,10 +313,11 @@ class Main {
     // Adds the fart image and instabnce to the pig
     pig.addFart(resourceManager.getBitmapData('fart'), 5);
 
-    num topOffset = stage.contentRectangle.height - (floor.height);
+//    num topOffset = stage.contentRectangle.height - (floor.height);
+    num topOffset = STAGE_RECT.height - floor.height;
     floor.y = topOffset;
     trees.y = topOffset - trees.height;
-    clouds.y = topOffset - trees.height - clouds.height;
+    clouds.y = topOffset - trees.height - clouds.height + 1;
 
     c = new Collisions(
         resourceManager.getBitmapData('obstacleup'),

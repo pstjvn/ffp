@@ -1,33 +1,20 @@
 import 'dart:html';
-import 'dart:async';
 import 'src/main.dart';
 
+
+/// Entry point of our application.
 void main() {
-  DivElement loader = document.querySelector('.loader');
-  ImageElement img = new ImageElement(src: 'assets/images/name.png');
-  img.style..position = 'absolute';
+  CanvasElement canvas = document.createElement('canvas');
 
-  Future il = img.onLoad.first.then((_) {
-    Rectangle cont = loader.getBoundingClientRect();
-    img.style..left = ((cont.width / 2) - (img.width / 2)).toString() + 'px'
-        ..top = ((cont.height / 2) - (img.height / 2)).toString() + 'px';
-    img.classes.add('visible');
-    return new Future.delayed(const Duration(seconds: 3));
-  });
-
-  CanvasElement canvas = document.querySelector('#stage');
-  Rectangle r = canvas.parent.getBoundingClientRect();
   canvas
-      ..width = r.width.toInt()
-      ..height = r.height.toInt()
-      ..style.width = '${r.width.toInt()}px'
-      ..style.height = '${r.height.toInt()}px';
+      ..setAttribute("screencanvas", "true")
+      ..width = window.innerWidth
+      ..height = window.innerHeight;
 
-  loader.append(img);
-  Future whenReady = Main.instanciate(canvas);
+  document.body.children.add(canvas);
 
-  Future.wait([whenReady, il]).then((_){
-    loader.style.opacity = '0';
-    (new Timer(const Duration(milliseconds: 500), () => loader.remove()));
-  });
+  // Debug for cocoon JS.
+  print('Canvas dimentions: ${canvas.width}, ${canvas.height}');
+
+  Main.instanciate(canvas);
 }

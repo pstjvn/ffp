@@ -203,7 +203,7 @@ class Collisions implements CollisionGroup {
   }
 
   void _createZones() {
-    var rect = _stage.contentRectangle;
+    var rect = STAGE_RECT; //new Rectangle(0, 0, 480, 640); //_stage.contentRectangle;
     var zoneCount = (rect.width / (_up.width + _zoneSpacing)).ceil() + 1;
     zones = new List.generate(zoneCount, (i) => createZone(i), growable: false);
   }
@@ -225,7 +225,7 @@ class Collisions implements CollisionGroup {
   }
 
   void setInitialPosition() {
-    num x = _stage.contentRectangle.width;
+    num x = STAGE_RECT.width; //480; //_stage.contentRectangle.width;
     zones.forEach((zone) {
       zone.x = x;
       x = x + zone.width + _zoneSpacing;
