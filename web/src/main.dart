@@ -425,18 +425,28 @@ class Main {
    * custom events to the scene.
    */
   void configureEvents(dynamic _) {
+    var _eh;
     if (Multitouch.supportsTouchEvents) {
       Multitouch.inputMode = MultitouchInputMode.TOUCH_POINT;
+      _eh = new TouchEventHandler();
+      stage.onTouchBegin.listen((Event e) => _eh.handleTouchStart(e));
+      stage.onTouchMove.listen((Event e) => _eh.handleTouchMove(e));
+      stage.onTouchEnd.listen((Event e) => _eh.handleTouchEnd(e));
+    } else {
+      _eh = new MouseEventHandler();
+      stage.onMouseDown.listen((Event e) => _eh.handleMouseStart(e));
+      stage.onMouseMove.listen((Event e) => _eh.handleMouseMove(e));
+      stage.onMouseUp.listen((Event e) => _eh.handleMouseEnd(e));
     }
-    stage.onTouchBegin.listen((Event e) => handleTap(e));
-    stage.onMouseDown.listen((Event e) => handleTap(e));
-    floor.onTouchBegin.listen((Event e) => handleAccelerateButton(e));
-    floor.onMouseDown.listen((Event e) => handleAccelerateButton(e));
+
+    // Configure the event handler
+    _eh.onTap = handleTap;
+    _eh.onSwipe = handleSwipe;
   }
 
+
   ///  Handles the tap/click on the 'accelerate' button.
-  void handleAccelerateButton(Event e) {
-    e.stopImmediatePropagation();
+  void handleSwipe() {
     if (pig.dead) return;
     pig.fart();
     _fart.play();
