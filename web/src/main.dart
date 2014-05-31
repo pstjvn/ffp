@@ -90,6 +90,8 @@ class Main {
   num _pigXValue = 0;
   /// Reference to the splashs creen used.
   Bitmap splash;
+  Bitmap initscreen;
+  Bitmap gameover;
   /// The sky map in the background.
   StaticBackground sky;
   /// The clouds in the background.
@@ -131,6 +133,13 @@ class Main {
   BoundAnimation treeImpact;
   BoundAnimation thornImpact;
 
+
+  Future<ResourceManager> preload() {
+    // here we want to start loading the main image and create the stage
+    resourceManager = new ResourceManager();
+    resourceManager.addBitmapData('init', 'assets/images/name.png');
+    return resourceManager.load();
+  }
 
 
   /**
@@ -206,6 +215,34 @@ class Main {
     renderLoop.addStage(stage);
   }
 
+  void showInit(ResourceManager rm) {
+    initscreen = new Bitmap(rm.getBitmapData('init'));
+    initscreen
+        ..pivotX = initscreen.width / 2
+        ..pivotY = initscreen.height / 2
+        ..x = STAGE_RECT.width / 2 - initscreen.width / 2 + initscreen.pivotX
+        ..y = STAGE_RECT.height / 2 - initscreen.width / 2 + initscreen.pivotY
+        ..scaleX = 0.0
+        ..scaleY = 0.0;
+    stage.addChild(initscreen);
+  }
+
+  Future<List> initFX(dynamic _) {
+    var c = new Completer();
+    var chain = new AnimationGroup()
+        ..add(new Tween(initscreen, 2.5, TransitionFunction.easeOutElastic)
+          ..animate.scaleX.to(1.0)
+          ..animate.scaleY.to(1.0))
+        ..add(new Tween(initscreen, 1.7, TransitionFunction.easeInCircular)
+          ..animate.rotation.by(math.PI * 2 * 2))
+        ..onComplete = () {
+      c.complete(true);
+    };
+
+    juggler.add(chain);
+    return Future.wait([c.future, new Future.delayed(new Duration(seconds: 3))]);
+  }
+
 //  Future<List<BitmapData>> createImages(_) {
 //    return Future.wait([
 //      fromSvg(resourceManager.getTextFile('flag'), 300, 200),
@@ -217,7 +254,7 @@ class Main {
    * Extracted resources description and start of thier load.
    * Returns [Future] that will be resolved when all resources are loaded.
    */
-  Future<ResourceManager> loadResources() {
+  Future<ResourceManager> loadResources(dynamic rm) {
     addResources(resourceManager);
     return resourceManager.load();
   }
@@ -259,6 +296,11 @@ class Main {
 
     treeImpact = new BoundAnimation(resourceManager.getBitmapData('impact'), frames: 6);
     thornImpact = new BoundAnimation(resourceManager.getBitmapData('blood'), frames: 6, framesPerSprite: 3)..type = BoundAnimation.SIDED;
+
+    gameover = new Bitmap(resourceManager.getBitmapData('gameover'));
+    gameover
+        ..x = (_stagerect.width / 2) - (gameover.width / 2)
+        ..y = (_stagerect.height / 3) - (gameover.height / 2);
 
     score = new GameScore(bitmap: resourceManager.getBitmapData('digits'),
       boundingRect: _stagerect,
@@ -402,12 +444,16 @@ class Main {
   }
 
   /// Handles the tapping / clicking on the stage.
-  void handleTap(Event e) {
-    if (e.stopsImmediatePropagation) return;
+  void handleTap() {
 
-    e.stopImmediatePropagation();
+    if (pig.dead && !_canStart) {
+      return;
+    }
 
-    if (pig.dead && !_canStart) return;
+    if (stage.getChildIndex(gameover) != -1) {
+      showSplash();
+      return;
+    }
 
     if (!_inGame && _canStart) {
       _start.play();
@@ -568,7 +614,12 @@ class Main {
   }
 
   void showSplash() {
-    stage.addChild(splash..alpha = 1);
+    if (stage.getChildIndex(gameover) == -1 ) {
+      stage.addChild(gameover);
+    } else {
+      stage.removeChild(gameover);
+      stage.addChild(splash..alpha = 1);
+    }
     _canStart = true;
   }
 
