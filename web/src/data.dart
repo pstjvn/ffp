@@ -58,7 +58,5 @@ void addResources(ResourceManager rm) {
     ..addSound('fartsound', 'assets/sounds/fart7.mp3', slo)
     ..addSound('die', 'assets/sounds/cartoonish_whip_crack.mp3', slo)
     ..addSound('pig', 'assets/sounds/pig-sound.mp3', slo)
-    ..addSound('stab', 'assets/sounds/knife-stab.mp3', slo)
-    ..addTextFile('flower', 'assets/images/flower.svg')
-    ..addTextFile('flag', 'assets/images/flag.svg');
+    ..addSound('stab', 'assets/sounds/knife-stab.mp3', slo);
 }
