@@ -16,6 +16,7 @@ part 'obstacles.dart';
 part 'gamescore.dart';
 part 'boundanimations.dart';
 part 'eventhandler.dart';
+part 'gameoverscreen.dart';
 
 
 /// Global reference to the dimentions of the game. This is the game size not the screen size.
@@ -91,7 +92,7 @@ class Main {
   /// Reference to the splashs creen used.
   Bitmap splash;
   Bitmap initscreen;
-  Bitmap gameover;
+  GameOverOverlay _gameOverOverlay;
   /// The sky map in the background.
   StaticBackground sky;
   /// The clouds in the background.
@@ -110,6 +111,7 @@ class Main {
   Player pig;
   /// Reference to the group of obstacles / collition.
   Collisions c;
+//  ColorMatrixFilter filter = new ColorMatrixFilter.grayscale();
 
   // GAME SPECIFIC SOUNDS
 
@@ -297,10 +299,12 @@ class Main {
     treeImpact = new BoundAnimation(resourceManager.getBitmapData('impact'), frames: 6);
     thornImpact = new BoundAnimation(resourceManager.getBitmapData('blood'), frames: 6, framesPerSprite: 3)..type = BoundAnimation.SIDED;
 
-    gameover = new Bitmap(resourceManager.getBitmapData('gameover'));
-    gameover
-        ..x = (_stagerect.width / 2) - (gameover.width / 2)
-        ..y = (_stagerect.height / 3) - (gameover.height / 2);
+    _gameOverOverlay = new GameOverOverlay(resourceManager.getBitmapData('gameover'),
+        resourceManager.getBitmapData('digits'));
+
+    _gameOverOverlay
+        ..x = (_stagerect.width / 2) - (_gameOverOverlay.width / 2)
+        ..y = (_stagerect.height / 3) - (_gameOverOverlay.height / 2);
 
     score = new GameScore(bitmap: resourceManager.getBitmapData('digits'),
       boundingRect: _stagerect,
@@ -460,7 +464,7 @@ class Main {
       return;
     }
 
-    if (stage.getChildIndex(gameover) != -1) {
+    if (stage.getChildIndex(_gameOverOverlay) != -1) {
       showSplash();
       return;
     }
@@ -624,10 +628,10 @@ class Main {
   }
 
   void showSplash() {
-    if (stage.getChildIndex(gameover) == -1 ) {
-      stage.addChild(gameover);
+    if (stage.getChildIndex(_gameOverOverlay) == -1 ) {
+      stage.addChild(_gameOverOverlay..score = score.value);
     } else {
-      stage.removeChild(gameover);
+      stage.removeChild(_gameOverOverlay);
       stage.addChild(splash..alpha = 1);
     }
     _canStart = true;
