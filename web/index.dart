@@ -8,8 +8,8 @@ void main() {
 
   canvas
       ..setAttribute("screencanvas", "true")
-      ..width = window.innerWidth
-      ..height = window.innerHeight;
+      ..width = window.innerWidth.toInt()
+      ..height = window.innerHeight.toInt();
 
   document.body.children.add(canvas);
 

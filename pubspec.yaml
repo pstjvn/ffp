@@ -1,10 +1,8 @@
 name: ffp
-description: A sample Polymer application
+description: Flying farting pig game
 dependencies:
-    polymer: any
-    stagexl: any
+    stagexl:
+      git: https://github.com/bp74/StageXL.git
 transformers:
-- polymer:
-    entry_points: web/ffp.html
 - $dart2js:
     minify: true
