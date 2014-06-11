@@ -3,6 +3,8 @@ description: Flying farting pig game
 dependencies:
     stagexl:
       git: https://github.com/bp74/StageXL.git
+    convenience_xl:
+      path: ../convenience_xl
 transformers:
 - $dart2js:
     minify: true

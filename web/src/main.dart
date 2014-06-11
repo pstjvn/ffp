@@ -6,6 +6,7 @@ import 'dart:math'  as math;
 import 'dart:js' as js;
 import 'package:stagexl/stagexl.dart';
 import '../lib/stagexlhelpers.dart';
+import 'package:convenience_xl/convenience_xl.dart' as cxl;
 
 part 'data.dart';
 part 'utils.dart';
@@ -134,6 +135,7 @@ class Main {
 
   BoundAnimation treeImpact;
   BoundAnimation thornImpact;
+  cxl.Button fartButton;
 
 
   Future<ResourceManager> preload() {
@@ -296,6 +298,12 @@ class Main {
     var pigdata = resourceManager.getBitmapData('pig');
     var splashdata = resourceManager.getBitmapData('tap');
 
+    fartButton = new cxl.Button()
+        ..setButtonBitmap(state: cxl.Button.NORMAL, data: resourceManager.getBitmapData('btn'))
+        ..setButtonBitmap(state: cxl.Button.PRESSED, data: resourceManager.getBitmapData('btnp'))
+        ..x = 0
+        ..y = STAGE_RECT.height - resourceManager.getBitmapData('btn').height;
+
     treeImpact = new BoundAnimation(resourceManager.getBitmapData('impact'), frames: 6);
     thornImpact = new BoundAnimation(resourceManager.getBitmapData('blood'), frames: 6, framesPerSprite: 3)..type = BoundAnimation.SIDED;
 
@@ -415,6 +423,7 @@ class Main {
       ..addChild(floor)
       ..addChild(score.bitmap)
       ..addChild(pig)
+      ..addChild(fartButton)
       ..addChild(splash);
 
     juggler
@@ -432,20 +441,43 @@ class Main {
     var _eh;
     if (Multitouch.supportsTouchEvents) {
       Multitouch.inputMode = MultitouchInputMode.TOUCH_POINT;
-      _eh = new TouchEventHandler();
-      stage.onTouchBegin.listen((Event e) => _eh.handleTouchStart(e));
-      stage.onTouchMove.listen((Event e) => _eh.handleTouchMove(e));
-      stage.onTouchEnd.listen((Event e) => _eh.handleTouchEnd(e));
-    } else {
-      _eh = new MouseEventHandler();
-      stage.onMouseDown.listen((Event e) => _eh.handleMouseStart(e));
-      stage.onMouseMove.listen((Event e) => _eh.handleMouseMove(e));
-      stage.onMouseUp.listen((Event e) => _eh.handleMouseEnd(e));
-    }
+      new cxl.TouchEventHandler(stage)
+          ..alwaysTap = true
+          ..onGesture.listen((type) {
+            switch (type) {
+              case cxl.EventHandler.TAP:
+                handleTap();
+                break;
+              case cxl.EventHandler.SWIPE_TO_RIGHT:
+                handleSwipe();
+                break;
+            }
+      });
 
-    // Configure the event handler
-    _eh.onTap = handleTap;
-    _eh.onSwipe = handleSwipe;
+      new cxl.TouchEventHandler(fartButton)
+          ..alwaysTap = true
+          ..onGesture.where((type) => type == cxl.EventHandler.TAP).listen((_) {
+              handleSwipe();
+          });
+    } else {
+      new cxl.MouseEventHandler(stage)
+          ..alwaysTap = true
+          ..onGesture.listen((type) {
+            switch (type) {
+              case cxl.EventHandler.TAP:
+                handleTap();
+                break;
+              case cxl.EventHandler.SWIPE_TO_RIGHT:
+                handleSwipe();
+                break;
+            }
+      });
+      new cxl.MouseEventHandler(fartButton)
+          ..alwaysTap = true
+          ..onGesture.where((type) => type == cxl.EventHandler.TAP).listen((_) {
+              handleSwipe();
+          });
+    }
   }
 
 
