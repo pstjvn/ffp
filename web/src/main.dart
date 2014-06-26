@@ -376,9 +376,11 @@ class Main {
 
     // Adds the fart image and instabnce to the pig
     pig.addFart(resourceManager.getBitmapData('fart'), 5);
+    pig.shield = new Bitmap(resourceManager.getBitmapData('shield'));
 
 //    num topOffset = stage.contentRectangle.height - (floor.height);
-    num topOffset = STAGE_RECT.height - floor.height;
+    /// Set this to fixed to allow normal playback on 1.77 devices...
+    num topOffset = 600; //STAGE_RECT.height - floor.height;
     floor.y = topOffset;
     trees.y = topOffset - trees.height;
     clouds.y = topOffset - trees.height - clouds.height + 1;
@@ -415,7 +417,7 @@ class Main {
         if (c.advanceMove(offset)) {
           score.score();
         }
-        if (c.collides(pig)) {
+        if (!pig.shiledActive && c.collides(pig)) {
           onCollision();
         }
       }
@@ -441,6 +443,8 @@ class Main {
       ..add(gm)
       ..add(trees)
       ..add(clouds);
+    //// TEST ONLY
+//    pig.activeShield(true);
   }
 
   /**
