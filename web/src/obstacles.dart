@@ -53,12 +53,61 @@ class Obstacle extends Bitmap {
 class NewObstacle extends Irregular {
   static final String TOP = 'top';
   static final String BOTTOM = 'bottom';
+  static AnimationPool pool;
   String orientationType = TOP;
+  SpriteAnimation _joker;
+
+  bool ignore = false;
+
+  bool _isJoker = false;
+
+  bool get isJoker => _isJoker;
 
   NewObstacle(BitmapData bmd, List<Point<int>> points): super() {
     bitmapData = bmd;
     setPolygonPoints(points);
   }
+
+  void playCollision() {
+    ignore = true;
+    _joker.play();
+  }
+
+  void attachJocker(bool attach) {
+
+    ignore = false;
+    _isJoker = attach;
+    alpha = 1;
+
+    if (pool == null) throw new StateError('Pool for objects is not set');
+
+    /// Remove this one!
+    if (_joker != null) {
+      pool.releaseObject(_joker);
+      _joker = null;
+    }
+
+    if (attach) {
+      _joker = pool.getObject();
+      _joker.reset();
+      stage.addChildAt(_joker, stage.getChildIndex(this) + 1);
+    }
+  }
+
+  void set x(num val) {
+    super.x = val;
+    if (_joker != null) {
+      _joker.x = val - ((_joker.width - width) / 2);
+    }
+  }
+
+  void set y(num val) {
+    super.y = val;
+    if (_joker != null) {
+      _joker.y = val;
+    }
+  }
+
 }
 
 
@@ -73,6 +122,14 @@ class CollisionZone {
   int passage = 0;
   int _height = 0;
   int width;
+  static math.Random Joker = new math.Random();
+
+  bool get isJoker => Joker.nextDouble() > 0.9;
+//  bool isJoker = true;
+
+  void createJoker() {
+    up.attachJocker(isJoker);
+  }
 
 
   /**
@@ -130,7 +187,7 @@ class CollisionZone {
    * be colliding with the test object.
    */
   NewObstacle findCollidingObstacle(Bitmap obj) {
-    if (up.hitTestObject(obj)) return up;
+    if (!up.ignore && up.hitTestObject(obj)) return up;
     if (down.hitTestObject(obj)) return down;
     return null;
   }
@@ -218,7 +275,6 @@ class Collisions implements CollisionGroup {
   CollisionZone createZone(int index) {
     var zone = new CollisionZone(_up, _down);
     zone
-//        ..height = _height
         ..passage = _holeHeight
         ..passZone = rn.nextInt(_height - _holeHeight);
     return zone;
@@ -278,6 +334,7 @@ class Collisions implements CollisionGroup {
     }
     for (i = 0; i < zones.length; i++) {
       if (zones[i].x < (zones[i].width * -1)) {
+        zones[i].createJoker();
         zones[i].x = greatestX + zones[i].width + _zoneSpacing;
         zones[i].passZone = rn.nextInt(_height - _holeHeight);
       }

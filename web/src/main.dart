@@ -18,7 +18,9 @@ part 'gamescore.dart';
 part 'boundanimations.dart';
 part 'eventhandler.dart';
 part 'gameoverscreen.dart';
-
+part 'bitmappool.dart';
+part 'animationpool.dart';
+part 'spriteanimation.dart';
 
 /// Global reference to the dimentions of the game. This is the game size not the screen size.
 var STAGE_RECT = new Rectangle(0, 0, 0, 0);
@@ -138,12 +140,15 @@ class Main {
   cxl.Button fartButton;
 
 
+
   Future<ResourceManager> preload() {
     // here we want to start loading the main image and create the stage
     resourceManager = new ResourceManager();
     resourceManager.addBitmapData('init', 'assets/images/name.png');
     return resourceManager.load();
   }
+
+  static math.Random jokerType = new math.Random();
 
 
   /**
@@ -156,9 +161,9 @@ class Main {
       int obstacleDistance,
       int obstacleHoleHeight,
       int framerate }) {
-
-    var x = canvas.width;
-    var y = canvas.height;
+//
+//    var x = canvas.width;
+//    var y = canvas.height;
 
 
     STAGE_RECT.width = 480;
@@ -297,6 +302,11 @@ class Main {
     var cloudsdata = resourceManager.getBitmapData('clouds');
     var pigdata = resourceManager.getBitmapData('pig');
     var splashdata = resourceManager.getBitmapData('tap');
+
+    NewObstacle.pool = AnimationPool.createPool(resourceManager.getBitmapData('collapse'),
+        limit: 4,
+        frames: 10,
+        framesPerSecond: 2);
 
     fartButton = new cxl.Button()
         ..setButtonBitmap(state: cxl.Button.NORMAL, data: resourceManager.getBitmapData('btn'))
@@ -534,8 +544,21 @@ class Main {
 
   /// Handles a collision detected event.
   void onCollision() {
-    juggler.removeTweens(pig);
-    die();
+    if (c.lastObstacle.isJoker) {
+      c.lastObstacle.playCollision();
+      if (jokerType.nextBool()) {
+        // win immortality
+        pig.enableShield(true);
+        c.lastObstacle.alpha = 0;
+      } else {
+        juggler.removeTweens(pig);
+        die();
+      }
+      c.lastObstacle = null;
+    } else {
+      juggler.removeTweens(pig);
+      die();
+    }
   }
 
   /// Starts a new game.
