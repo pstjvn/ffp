@@ -54,6 +54,8 @@ void addResources(ResourceManager rm) {
     ..addBitmapData('gameover', 'assets/images/game-over.png')
     ..addBitmapData('btn', 'assets/images/button.png')
     ..addBitmapData('btnp', 'assets/images/button-pressed.png')
+    ..addBitmapData('shield', 'assets/images/pig-shield.png')
+    ..addBitmapData('collapse', 'assets/images/collapse.png')
     ..addSound('clicker', 'assets/sounds/punch26.mp3', slo)
     ..addSound('start', 'assets/sounds/rope_swinging_swish_2.mp3', slo)
     ..addSound('score', 'assets/sounds/app_game_interactive_alert_tone_016.mp3', slo)
