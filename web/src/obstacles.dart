@@ -378,6 +378,7 @@ class Collisions implements CollisionGroup {
    * used to determine the offset for the actual drawing and should be
    * the offset calculated for the target [Bitmap].
    */
+  @deprecated
   void _drawImageOnHelperCanvas(HelperCanvas hp, Bitmap bm, Rectangle where) {
     var rtq = bm.bitmapData.renderTextureQuad;
     _cachedMatrix..identity()..copyFrom(bm.transformationMatrix)..translate(-where.x, -where.y);
@@ -445,6 +446,7 @@ class Collisions implements CollisionGroup {
   /**
    * Creates the canvases to be used based on the target [Bitmap] size.
    */
+  @deprecated
   void _createHelperCanvases(Bitmap target) {
     // Use the bitmap dimentions instead of the object one as the object
     // might already be transformed (and thus bigger).
@@ -462,6 +464,7 @@ class Collisions implements CollisionGroup {
   /**
    * Iterate on the actual image data pixel by pixel to detect collision.
    */
+  @deprecated
   bool _compareCanvases() {
     var source = _playerCanvas.pixels;
     var dest = _obstaclesCanvas.pixels;
