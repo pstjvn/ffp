@@ -17,7 +17,7 @@ class BoundAnimation extends Bitmap implements Animatable {
   int _delay = 0;
   int type = CENTERED;
 
-  BoundAnimation(BitmapData bitmap, {this.frames: 1, this.framesPerSprite: 1}): super() {
+  BoundAnimation(BitmapData bitmap, {this.frames: 1, this.framesPerSprite: 1}) : super() {
     var width = (bitmap.width > bitmap.height) ? bitmap.width ~/ frames : bitmap.width;
     var height = (bitmap.height > bitmap.width) ? bitmap.height ~/ frames : bitmap.height;
     sprites = new SpriteSheet(bitmap, width, height);
@@ -28,7 +28,9 @@ class BoundAnimation extends Bitmap implements Animatable {
     _delay = 0;
     _currentFrame = 0;
     bitmapData = sprites.frameAt(_currentFrame);
-    st.addChild(this);
+    if (st != null) {
+      st.addChild(this);
+    }
     stage.renderLoop.juggler.add(this);
   }
 
@@ -42,6 +44,8 @@ class BoundAnimation extends Bitmap implements Animatable {
       } else {
         stage.renderLoop.juggler.remove(this);
         stage.removeChild(this);
+        _currentFrame = 0;
+        bitmapData = sprites.frameAt(_currentFrame);
       }
     }
     return true;
@@ -70,7 +74,7 @@ class Fart extends Bitmap implements Animatable {
   int _currentFrame = 0;
   int _delay = 0;
 
-  Fart(BitmapData bitmap, {this.frames: 1, this.framesPerSprite: 2}): super() {
+  Fart(BitmapData bitmap, {this.frames: 1, this.framesPerSprite: 2}) : super() {
     sprites = new SpriteSheet(bitmap, bitmap.width, bitmap.height ~/ frames);
     bitmapData = sprites.frameAt(_currentFrame);
   }
