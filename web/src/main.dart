@@ -25,6 +25,7 @@ part 'spriteanimation.dart';
 /// Global reference to the dimentions of the game. This is the game size not the screen size.
 var STAGE_RECT = new Rectangle(0, 0, 0, 0);
 
+bool __COCOON__ = true;
 
 /**
  * Provides the main game class.

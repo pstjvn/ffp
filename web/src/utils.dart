@@ -32,5 +32,10 @@ class Floor extends DisplayObjectContainer {
  * webGL context.
  */
 class GameStage extends Stage {
-  GameStage(html.CanvasElement canvas): super(canvas, width: STAGE_RECT.width , height: STAGE_RECT.height, webGL: false, color: 0xFF42ABE1);
+  GameStage(html.CanvasElement canvas): super(
+      canvas,
+      width: STAGE_RECT.width ,
+      height: STAGE_RECT.height,
+      webGL: !__COCOON__,
+      color: 0xFF42ABE1);
 }
