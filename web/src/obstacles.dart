@@ -53,9 +53,9 @@ class Obstacle extends Bitmap {
 class NewObstacle extends Irregular {
   static final String TOP = 'top';
   static final String BOTTOM = 'bottom';
-  static AnimationPool pool;
+  static MultipleImagesAnimationPool pool;
   String orientationType = TOP;
-  SpriteAnimation _joker;
+  MultipleImageAnimation _joker;
 
   bool ignore = false;
 

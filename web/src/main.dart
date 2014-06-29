@@ -20,7 +20,7 @@ part 'eventhandler.dart';
 part 'gameoverscreen.dart';
 part 'bitmappool.dart';
 part 'animationpool.dart';
-part 'spriteanimation.dart';
+part 'imageanimations.dart';
 
 /// Global reference to the dimentions of the game. This is the game size not the screen size.
 var STAGE_RECT = new Rectangle(0, 0, 0, 0);
@@ -304,10 +304,23 @@ class Main {
     var pigdata = resourceManager.getBitmapData('pig');
     var splashdata = resourceManager.getBitmapData('tap');
 
-    NewObstacle.pool = AnimationPool.createPool(resourceManager.getBitmapData('collapse'),
-        limit: 4,
-        frames: 10,
-        framesPerSecond: 2);
+//    NewObstacle.pool = AnimationPool.createPool(resourceManager.getBitmapData('collapse'),
+//        limit: 4,
+//        frames: 2,
+//        framesPerSecond: 2);
+
+    NewObstacle.pool = MultipleImagesAnimationPool.createPool([
+          resourceManager.getBitmapData('c0'),
+          resourceManager.getBitmapData('c1'),
+          resourceManager.getBitmapData('c2'),
+          resourceManager.getBitmapData('c3'),
+          resourceManager.getBitmapData('c4'),
+          resourceManager.getBitmapData('c5'),
+          resourceManager.getBitmapData('c6'),
+          resourceManager.getBitmapData('c7'),
+          resourceManager.getBitmapData('c8'),
+          resourceManager.getBitmapData('c9'),
+        ], limit: 4, frameDuration: 3);
 
     fartButton = new cxl.Button()
         ..setButtonBitmap(state: cxl.Button.NORMAL, data: resourceManager.getBitmapData('btn'))

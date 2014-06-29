@@ -21,14 +21,50 @@ class AnimationPool extends BitmapPool {
 
 
   @override
-  SpriteAnimation createElement(data) {
-    return new SpriteAnimation(data, frames: frames, frameDuration: framesPerSecond);
+  SingleImageAnimation createElement(data) {
+    return new SingleImageAnimation(data, frames: frames, frameDuration: framesPerSecond);
   }
 
 
   @override
   void releaseObject(o) {
     super.releaseObject(o);
+  }
+
+}
+
+
+class MultipleImagesAnimationPool extends BitmapPool {
+
+  List<BitmapData> images;
+  List<MultipleImageAnimation> instances = new List();
+  int frameDuration;
+
+
+  static MultipleImagesAnimationPool createPool(List<BitmapData> images, {
+    limit: 1,
+    frameDuration: 2
+  }) {
+    return new MultipleImagesAnimationPool.internal(images, limit)
+        ..frameDuration = frameDuration
+        .._createPool();
+  }
+
+
+  MultipleImagesAnimationPool.internal(List<BitmapData> imgs, limit) : super.internal(null, limit) {
+    this.images = imgs;
+  }
+
+
+  /// Instead of using the data (which is null) use the images list when creating the animation
+  /// instances.
+  @override
+  MultipleImageAnimation createElement(data) {
+    return new MultipleImageAnimation()
+        ..frameDuration = frameDuration
+        ..setImageData(images)
+        ..reset();
+
   }
 
 }
