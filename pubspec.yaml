@@ -7,4 +7,4 @@ dependencies:
       path: ../convenience_xl
 transformers:
 - $dart2js:
-    minify: false
+    minify: true
