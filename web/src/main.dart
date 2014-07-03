@@ -564,7 +564,7 @@ class Main {
   void onCollision() {
     if (c.lastObstacle.isJoker) {
       c.lastObstacle.playCollision();
-      if (jokerType.nextBool()) {
+      if (jokerType.nextDouble() > 0.3) {
         // win immortality
         pig.enableShield(true);
         c.lastObstacle.alpha = 0;
