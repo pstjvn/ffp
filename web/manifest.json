@@ -1,0 +1,10 @@
+{
+  "name": "PigDemo",
+  "manifest_version": 1,
+  "version": "1.2.1",
+  "app": {
+    "launch":{
+      "local_path": "index.html"
+    }
+  }
+}
