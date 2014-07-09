@@ -25,7 +25,7 @@ part 'imageanimations.dart';
 /// Global reference to the dimentions of the game. This is the game size not the screen size.
 var STAGE_RECT = new Rectangle(0, 0, 0, 0);
 
-bool __COCOON__ = true;
+bool __COCOON__ = false;
 
 /**
  * Provides the main game class.
@@ -145,7 +145,7 @@ class Main {
   Future<ResourceManager> preload() {
     // here we want to start loading the main image and create the stage
     resourceManager = new ResourceManager();
-    resourceManager.addBitmapData('init', 'assets/images/name.png');
+    resourceManager.addBitmapData('init', 'lib/images/name.png');
     return resourceManager.load();
   }
 
