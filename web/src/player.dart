@@ -12,7 +12,7 @@ class Player extends Irregular implements Animatable {
   SpriteSheet sprites;
 
   /// The size of the bitmap to use. It should be usually lower than the [Bitmap] size.
-  Rectangle size;
+  Rectangle<num> size;
 
   int _wingsDelay = 0;
   int dieFrame = 5;
@@ -44,7 +44,7 @@ class Player extends Irregular implements Animatable {
       throw new ArgumentError('Both size and source bitmap are required');
     }
 
-    sprites = new SpriteSheet(source, size.width, size.height);
+    sprites = new SpriteSheet(source, size.width.toInt(), size.height.toInt());
     _ng = new LinearNumberGenerator(min: 0, max: animationFrames - 1, step: 1);
     _fly = new CyclicNumberGenerator(min: size.height / -4, max: size.height / 4, step: 1);
     bitmapData = sprites.frameAt(0);

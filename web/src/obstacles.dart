@@ -139,7 +139,7 @@ class CollisionZone {
   CollisionZone(BitmapData updata, BitmapData downdata) {
     up = new NewObstacle(updata, upTree)..orientationType = NewObstacle.TOP;
     down = new NewObstacle(downdata, upTree)..orientationType = NewObstacle.BOTTOM;
-    width = updata.width;
+    width = updata.width.toInt();
   }
 
 
@@ -401,19 +401,20 @@ class Collisions implements CollisionGroup {
 
   @deprecated
   bool imageCompareCollides(NewObstacle source, Player target) {
-    if (_playerCanvas == null) {
-      _createHelperCanvases(target);
-    }
-
-    _playerCanvas.clear();
-    _obstaclesCanvas.clear();
-
-    target.getBoundsTransformed(target.transformationMatrix, _rectCache);
-
-    _drawImageOnHelperCanvas(_playerCanvas, target, _rectCache);
-    _drawImageOnHelperCanvas(_obstaclesCanvas, source, _rectCache);
-
-    return _compareCanvases();
+    return false;
+//    if (_playerCanvas == null) {
+//      _createHelperCanvases(target);
+//    }
+//
+//    _playerCanvas.clear();
+//    _obstaclesCanvas.clear();
+//
+//    target.getBoundsTransformed(target.transformationMatrix, _rectCache);
+//
+//    _drawImageOnHelperCanvas(_playerCanvas, target, _rectCache);
+//    _drawImageOnHelperCanvas(_obstaclesCanvas, source, _rectCache);
+//
+//    return _compareCanvases();
   }
 
 

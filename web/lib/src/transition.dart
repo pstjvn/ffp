@@ -26,7 +26,7 @@ class ConstantMovementTransition implements Animatable {
       this.startValue,
       this.endValue,
       this._totalTime,
-      [this._transitionFunction = TransitionFunction.linear]) {
+      [this._transitionFunction = Transition.linear]) {
     currentValue = startValue;
   }
 

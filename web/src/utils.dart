@@ -36,6 +36,9 @@ class GameStage extends Stage {
       canvas,
       width: STAGE_RECT.width ,
       height: STAGE_RECT.height,
-      webGL: !__COCOON__,
-      color: 0xFF42ABE1);
+      options: new StageOptions()
+          ..backgroundColor = 0xFF42ABE1
+          ..renderEngine = (!__COCOON__ ? RenderEngine.WebGL : RenderEngine.Canvas2D)
+          ..inputEventMode = InputEventMode.MouseAndTouch
+      );
 }

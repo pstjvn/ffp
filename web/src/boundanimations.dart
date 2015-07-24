@@ -20,7 +20,7 @@ class BoundAnimation extends Bitmap implements Animatable {
   BoundAnimation(BitmapData bitmap, {this.frames: 1, this.framesPerSprite: 1}) : super() {
     var width = (bitmap.width > bitmap.height) ? bitmap.width ~/ frames : bitmap.width;
     var height = (bitmap.height > bitmap.width) ? bitmap.height ~/ frames : bitmap.height;
-    sprites = new SpriteSheet(bitmap, width, height);
+    sprites = new SpriteSheet(bitmap, width.toInt(), height.toInt());
     bitmapData = sprites.frameAt(_currentFrame);
   }
 
@@ -75,7 +75,7 @@ class Fart extends Bitmap implements Animatable {
   int _delay = 0;
 
   Fart(BitmapData bitmap, {this.frames: 1, this.framesPerSprite: 2}) : super() {
-    sprites = new SpriteSheet(bitmap, bitmap.width, bitmap.height ~/ frames);
+    sprites = new SpriteSheet(bitmap, bitmap.width.toInt(), (bitmap.height ~/ frames).toInt());
     bitmapData = sprites.frameAt(_currentFrame);
   }
 

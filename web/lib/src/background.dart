@@ -50,12 +50,12 @@ class Background extends Bitmap {
 
     num repeatStart = 0;
     BitmapData dest = new BitmapData(_desiredSize.width.toInt(), _desiredSize.height.toInt());
-    dest.copyPixels(data, data.rectangle, new Point(repeatStart, 0));
+    dest.copyPixels(data, data.rectangle.align(), new Point(repeatStart, 0));
 
     if (repeatX) {
       repeatStart = data.width;
       while(repeatStart < _desiredSize.width) {
-        dest.copyPixels(data, data.rectangle, new Point(repeatStart, 0));
+        dest.copyPixels(data, data.rectangle.align(), new Point(repeatStart, 0));
         repeatStart += data.width;
       }
     }
@@ -87,7 +87,9 @@ class StaticBackground extends Bitmap {
    * The [color] should be integer represented (0xRRGGBBAA) - [sxl.Color].
    */
   StaticBackground(Rectangle size, int color): super() {
-    bitmapData = new BitmapData(size.width.toInt(), size.height.toInt(), false, color);
+    var rect = size.align();
+    print(rect);
+    bitmapData = new BitmapData(rect.width, rect.height, color);
   }
 }
 

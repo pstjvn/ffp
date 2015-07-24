@@ -122,7 +122,7 @@ class MovementCap {
  */
 class AccelerationMovement {
 
-  AccelerationMovement(this.distance, {this.easeFn: TransitionFunction.easeOutCubic}) {
+  AccelerationMovement(this.distance, {this.easeFn: Transition.easeOutCubic}) {
     // Make it inactive at the beginning.
     advanced = distance;
   }

@@ -26,11 +26,11 @@ class Digits {
     int w = 0;
     int h = 0;
     if (source.width > source.height) {
-      w = source.width ~/ 10;
-      h = source.height;
+      w = (source.width ~/ 10).toInt();
+      h = (source.height).toInt();
     } else {
-      w = source.width;
-      h = source.height ~/ 10;
+      w = source.width.toInt();
+      h = (source.height ~/ 10).toInt();
     }
     _digits = new SpriteSheet(source, w, h);
   }

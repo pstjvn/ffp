@@ -17,7 +17,7 @@ class Score extends Bitmap {
   Map<int, BitmapData> bitmaps;
 
   /// The rectangle that represents the size of a single digit.
-  Rectangle _digitRect;
+  Rectangle<int> _digitRect;
 
 
   /**
@@ -39,8 +39,8 @@ class Score extends Bitmap {
   void set value(int score) {
     String s = score.toString();
     if (!bitmaps.containsKey(s.length)) {
-      BitmapData data = new BitmapData(s.length * _digitRect.width,
-          _digitRect.height);
+      BitmapData data = new BitmapData((s.length * _digitRect.width).toInt(),
+          _digitRect.height.toInt());
       bitmaps[s.length] = data;
     }
     List<String> d = s.split('');

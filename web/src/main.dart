@@ -240,10 +240,10 @@ class Main {
   Future<List> initFX(dynamic _) {
     var c = new Completer();
     var chain = new AnimationGroup()
-        ..add(new Tween(initscreen, 2.5, TransitionFunction.easeOutElastic)
+        ..add(new Tween(initscreen, 2.5, Transition.easeOutElastic)
           ..animate.scaleX.to(1.0)
           ..animate.scaleY.to(1.0))
-        ..add(new Tween(initscreen, 1.7, TransitionFunction.easeInCircular)
+        ..add(new Tween(initscreen, 1.7, Transition.easeInCircular)
           ..animate.rotation.by(math.PI * 2 * 2))
         ..onComplete = () {
       c.complete(true);
@@ -467,27 +467,27 @@ class Main {
    */
   void configureEvents(dynamic _) {
     var _eh;
-    if (Multitouch.supportsTouchEvents) {
-      Multitouch.inputMode = MultitouchInputMode.TOUCH_POINT;
-      new cxl.TouchEventHandler(stage)
-          ..alwaysTap = true
-          ..onGesture.listen((type) {
-            switch (type) {
-              case cxl.EventHandler.TAP:
-                handleTap();
-                break;
-              case cxl.EventHandler.SWIPE_TO_RIGHT:
-                handleSwipe();
-                break;
-            }
-      });
-
-      new cxl.TouchEventHandler(fartButton)
-          ..alwaysTap = true
-          ..onGesture.where((type) => type == cxl.EventHandler.TAP).listen((_) {
-              handleSwipe();
-          });
-    } else {
+//    if (Multitouch.supportsTouchEvents) {
+//      Multitouch.inputMode = MultitouchInputMode.TOUCH_POINT;
+//      new cxl.TouchEventHandler(stage)
+//          ..alwaysTap = true
+//          ..onGesture.listen((type) {
+//            switch (type) {
+//              case cxl.EventHandler.TAP:
+//                handleTap();
+//                break;
+//              case cxl.EventHandler.SWIPE_TO_RIGHT:
+//                handleSwipe();
+//                break;
+//            }
+//      });
+//
+//      new cxl.TouchEventHandler(fartButton)
+//          ..alwaysTap = true
+//          ..onGesture.where((type) => type == cxl.EventHandler.TAP).listen((_) {
+//              handleSwipe();
+//          });
+//    } else {
       new cxl.MouseEventHandler(stage)
           ..alwaysTap = true
           ..onGesture.listen((type) {
@@ -505,7 +505,7 @@ class Main {
           ..onGesture.where((type) => type == cxl.EventHandler.TAP).listen((_) {
               handleSwipe();
           });
-    }
+//    }
   }
 
 
@@ -553,7 +553,7 @@ class Main {
 
 
   void startFalling() {
-    pigtween = new Tween(pig, 0.9, TransitionFunction.easeInSine)
+    pigtween = new Tween(pig, 0.9, Transition.easeInSine)
         ..animate.y.to(floor.y - pig.pivotY)
         ..animate.rotation.to(0.1 * math.PI)
         ..onComplete = die;
@@ -589,7 +589,7 @@ class Main {
     pig.rotation = 0;
     juggler.remove(dieTween);
     c.setInitialPosition();
-    juggler.tween(splash, 0.5, TransitionFunction.linear)
+    juggler.addTween(splash, 0.5, Transition.linear)
       ..animate.alpha.to(0)
       ..onComplete = () {
       stage.removeChild(splash);
@@ -602,7 +602,7 @@ class Main {
     if (c.lastObstacle.orientationType == NewObstacle.BOTTOM) {
       // pig is inside the tree
       if (pig.x > c.lastObstacle.x && pig.x < c.lastObstacle.x + (c.lastObstacle.width / 2)) {
-        chain..add(new Tween(pig, 0.3, TransitionFunction.linear)..animate.rotation.to(math.PI/2));
+        chain..add(new Tween(pig, 0.3, Transition.linear)..animate.rotation.to(math.PI/2));
 
         pig.addBoundAnimation(treeImpact, BoundAnimation.TOP);
 
@@ -611,15 +611,15 @@ class Main {
           // we hit it on the left
           pig.x = pig.x + 10;
           chain
-            ..add(new Tween(pig, 0.2, TransitionFunction.linear)
+            ..add(new Tween(pig, 0.2, Transition.linear)
               ..animate.rotation.to((math.PI/4) * -1)
               ..animate.x.to(pig.x - 10))
-            ..add(new Tween(pig,  0.3, TransitionFunction.linear)
+            ..add(new Tween(pig,  0.3, Transition.linear)
               ..animate.y.to(floor.y - pig.pivotY))
-            ..add(new Tween(pig, 0.08, TransitionFunction.linear)
+            ..add(new Tween(pig, 0.08, Transition.linear)
               ..animate.y.to(floor.y - pig.pivotY + 15)
               ..animate.rotation.to((math.PI/2) * -1))
-            ..add(new Tween(pig, 1.1, TransitionFunction.linear)
+            ..add(new Tween(pig, 1.1, Transition.linear)
               ..animate.rotation.to((math.PI * 2) * -1)
               ..animate.x.to(pig.x - (math.PI * radius * 2)));
 
@@ -632,11 +632,11 @@ class Main {
           var remainder = (distance / perimeter) - (fulls * perimeter);
           var result = math.PI / remainder;
           chain
-            ..add(new Tween(pig, 0.2, TransitionFunction.linear)
+            ..add(new Tween(pig, 0.2, Transition.linear)
               ..animate.rotation.to(math.PI/4))
-            ..add(new Tween(pig,  0.3, TransitionFunction.linear)
+            ..add(new Tween(pig,  0.3, Transition.linear)
               ..animate.y.to(floor.y - pig.pivotY + 15))
-            ..add(new Tween(pig, (0.5 / 100 * distance), TransitionFunction.easeOutBack)
+            ..add(new Tween(pig, (0.5 / 100 * distance), Transition.easeOutBack)
               ..animate.x.to(distance)
               ..animate.rotation.by((math.PI * fulls) + result));
 
@@ -648,12 +648,12 @@ class Main {
       if (pig.x > c.lastObstacle.x && pig.x < c.lastObstacle.x + (c.lastObstacle.width / 2)) {
         // we hit the obstacle from the bottom,
         chain
-            ..add(new Tween(pig, 0.3, TransitionFunction.easeOutCubic)
+            ..add(new Tween(pig, 0.3, Transition.easeOutCubic)
                 ..animate.y.by(-15))
-            ..add(new Tween(pig,  1.0, TransitionFunction.linear)
+            ..add(new Tween(pig,  1.0, Transition.linear)
                 ..animate.y.by(15)
                 ..delay = 0.5)
-            ..add(new Tween(pig, 0.2, TransitionFunction.linear)
+            ..add(new Tween(pig, 0.2, Transition.linear)
                 ..animate.y.by(spaceBetweenObstacles - (pig.height * 1.25)));
 
 
@@ -663,13 +663,13 @@ class Main {
         if (pig.x < c.lastObstacle.x) {
           // we hit it on the left
           chain
-              ..add(new Tween(pig, 0.3, TransitionFunction.easeOutCubic)
+              ..add(new Tween(pig, 0.3, Transition.easeOutCubic)
                 ..animate.x.by(15))
-              ..add(new Tween(pig,  1.0, TransitionFunction.linear)
+              ..add(new Tween(pig,  1.0, Transition.linear)
                 ..animate.x.by(-15)
                 ..animate.y.by(10)
                 ..delay = 0.5)
-              ..add(new Tween(pig, 0.3, TransitionFunction.linear)
+              ..add(new Tween(pig, 0.3, Transition.linear)
                 ..animate.y.to(floor.y - pig.pivotY + 15)
                 ..animate.rotation.to(math.PI / 2 * -1));
 
@@ -678,13 +678,13 @@ class Main {
         } else {
           // we hit it on the right
           chain
-            ..add(new Tween(pig, 0.3, TransitionFunction.easeOutCubic)
+            ..add(new Tween(pig, 0.3, Transition.easeOutCubic)
               ..animate.x.by(-15))
-            ..add(new Tween(pig,  1.0, TransitionFunction.linear)
+            ..add(new Tween(pig,  1.0, Transition.linear)
               ..animate.x.by(15)
               ..animate.y.by(10)
               ..delay = 0.5)
-            ..add(new Tween(pig, 0.3, TransitionFunction.linear)
+            ..add(new Tween(pig, 0.3, Transition.linear)
               ..animate.y.to(floor.y - pig.pivotY)
               ..animate.rotation.to(math.PI / 2));
 

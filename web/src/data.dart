@@ -39,7 +39,11 @@ List<Point<int>> pigPoints = [
 
 /// Extracted regstration for resources to be loaded.
 void addResources(ResourceManager rm) {
-  var slo = new SoundLoadOptions(mp3: true, ogg: true, ignoreErrors: false);
+  SoundLoadOptions slo = new SoundLoadOptions()
+      ..mp3 = true
+      ..ogg = true
+      ..ignoreErrors = false;
+     
   rm..addBitmapData('floor', 'lib/images/soil.jpg')
     ..addBitmapData('trees', 'lib/images/trees.jpg')
     ..addBitmapData('obstacleup', 'lib/images/tree-up.png')
